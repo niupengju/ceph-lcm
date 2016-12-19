@@ -4,3 +4,4 @@
 .vagrant/*
 .cache/*
 .eggs/*
+node_modules/*
