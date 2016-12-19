@@ -32,9 +32,9 @@ endef
 
 define build_external_deb
     cd `mktemp -d` \
-		&& DEB_BUILD_OPTIONS=nocheck py2dsc-deb $(2) `pypi-download $(1) | cut -f 2 -d ' '` \
-		&& mv deb_dist/*.deb $(3) \
-		&& to_remove=`pwd` sh -c 'cd / && rm -rf $$to_remove'
+      && DEB_BUILD_OPTIONS=nocheck py2dsc-deb $(2) `pypi-download $(1) | cut -f 2 -d ' '` \
+      && mv deb_dist/*.deb $(3) \
+      && to_remove=`pwd` sh -c 'cd / && rm -rf $$to_remove'
 endef
 
 define build_deb_universal
@@ -59,6 +59,17 @@ endef
 
 define build_external_deb_py3
     $(call build_external_deb,$(1),--with-python2=False --with-python3=True,$(2))
+endef
+
+define build_image
+    docker build \
+        -f "$(ROOT_DIR)/containerization/$(1)" \
+        --tag $(2) \
+        --rm \
+        --build-arg "pip_index_url=${pip_index_url}" \
+        --build-arg "npm_registry=${npm_registry}" \
+        $(3) \
+        "$(ROOT_DIR)"
 endef
 
 define dump_image
@@ -246,31 +257,31 @@ build_containers: build_container_api build_container_controller \
 build_containers_dev: copy_example_keys build_containers
 
 build_container_api: build_container_plugins
-	docker build -f "$(ROOT_DIR)/containerization/backend-api.dockerfile" --tag $(CONTAINER_API_NAME) --rm "$(ROOT_DIR)"
+	$(call build_image,backend-api.dockerfile,$(CONTAINER_API_NAME))
 
 build_container_controller: build_container_plugins
-	docker build -f "$(ROOT_DIR)/containerization/backend-controller.dockerfile" --tag $(CONTAINER_CONTROLLER_NAME) --rm "$(ROOT_DIR)"
+	$(call build_image,backend-controller.dockerfile,$(CONTAINER_CONTROLLER_NAME))
 
 build_container_cron: build_container_controller
-	docker build -f "$(ROOT_DIR)/containerization/backend-cron.dockerfile" --tag $(CONTAINER_CRON_NAME) --rm "$(ROOT_DIR)"
+	$(call build_image,backend-cron.dockerfile,$(CONTAINER_CRON_NAME))
 
 build_container_frontend:
-	docker build -f "$(ROOT_DIR)/containerization/frontend.dockerfile" --tag $(CONTAINER_FRONTEND_NAME) --pull --rm "$(ROOT_DIR)"
+	$(call build_image,frontend.dockerfile,$(CONTAINER_FRONTEND_NAME),--pull)
 
 build_container_db:
-	docker build -f "$(ROOT_DIR)/containerization/db.dockerfile" --tag $(CONTAINER_DB_NAME) --pull --rm "$(ROOT_DIR)"
+	$(call build_image,db.dockerfile,$(CONTAINER_DB_NAME),--pull)
 
 build_container_db_data:
-	docker build -f "$(ROOT_DIR)/containerization/db-data.dockerfile" --tag $(CONTAINER_DB_DATA_NAME) --pull --rm "$(ROOT_DIR)"
+	$(call build_image,db-data.dockerfile,$(CONTAINER_DB_DATA_NAME),--pull)
 
 build_container_base:
-	docker build -f "$(ROOT_DIR)/containerization/backend-base.dockerfile" --tag $(CONTAINER_BASE_NAME) --pull --rm "$(ROOT_DIR)"
+	$(call build_image,backend-base.dockerfile,$(CONTAINER_BASE_NAME),--pull)
 
 build_container_plugins: build_container_base
-	docker build -f "$(ROOT_DIR)/containerization/backend-plugins.dockerfile" --tag $(CONTAINER_PLUGINS_NAME) --rm "$(ROOT_DIR)"
+	$(call build_image,backend-plugins.dockerfile,$(CONTAINER_PLUGINS_NAME))
 
 build_container_migrations: build_container_plugins
-	docker build -f "$(ROOT_DIR)/containerization/migrations.dockerfile" --tag $(CONTAINER_MIGRATIONS_NAME) --rm "$(ROOT_DIR)"
+	$(call build_image,migrations.dockerfile,$(CONTAINER_MIGRATIONS_NAME))
 
 # -----------------------------------------------------------------------------
 

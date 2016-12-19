@@ -6,11 +6,15 @@ MAINTAINER Sergey Arkhipov <sarkhipov@mirantis.com>
 
 
 LABEL version="0.2.0" description="Base image with frontend for Decapod" vendor="Mirantis"
+ARG pip_index_url=
+ARG npm_registry=
+
+ENV NPM_CONFIG_REGISTRY=${npm_registry:-https://registry.npmjs.org/}
+
 
 
 COPY containerization/files/nginx.conf                       /etc/nginx/nginx.conf
 COPY containerization/files/package_managers/debian_apt.list /etc/apt/sources.list
-COPY containerization/files/package_managers/npmrc           /root/.npmrc
 COPY ssl.crt                                                 /ssl/ssl.crt
 COPY ssl-dhparam.pem                                         /ssl/dhparam.pem
 COPY ssl.key                                                 /ssl/ssl.key
@@ -33,7 +37,7 @@ RUN set -x \
   && rm -rf /ui/build /ui/node_modules \
   && PATH=/node-v6.9.2-linux-x64/bin:$PATH sh -c 'cd /ui && npm install && npm run build && npm cache clean' \
   && mv /ui/build/* /static \
-  && rm -rf /ui /root/.npmrc node-v6.9.2-linux*
+  && rm -rf /ui node-v6.9.2-linux*
 
 
 CMD ["dockerize", "-wait", "tcp://api:8000", "--", "nginx", "-g", "daemon off;"]

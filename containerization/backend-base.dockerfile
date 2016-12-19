@@ -6,15 +6,16 @@ MAINTAINER Sergey Arkhipov <sarkhipov@mirantis.com>
 
 
 LABEL version="0.2.0" description="Base image of Decapod" vendor="Mirantis"
+ARG pip_index_url=
+ARG npm_registry=
 
-ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8 PIP_INDEX_URL=${pip_index_url:-https://pypi.python.org/simple/}
 
 
 COPY backend/common                                          /project/backend/common
 COPY backend/docker                                          /project/backend/docker
 COPY buildtools                                              /project/buildtools
 COPY config.yaml                                             /etc/decapod/config.yaml
-COPY containerization/files/package_managers/pip.conf        /root/.config/pip/pip.conf
 COPY containerization/files/package_managers/ubuntu_apt.list /etc/apt/sources.list
 COPY .git                                                    /project/.git
 COPY plugins/alerts/emails                                   /project/plugins/alerts/emails

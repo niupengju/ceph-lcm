@@ -6,6 +6,8 @@ MAINTAINER Sergey Arkhipov <sarkhipov@mirantis.com>
 
 
 LABEL version="0.2.0" description="Different cron jobs for Decapod" vendor="Mirantis"
+ARG pip_index_url=
+ARG npm_registry=
 
 
 COPY backend/monitoring                    /project/monitoring
