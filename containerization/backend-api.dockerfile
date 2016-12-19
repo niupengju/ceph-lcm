@@ -1,7 +1,7 @@
 # vi: set ft=dockerfile :
 
 
-FROM decapod-base-plugins
+FROM decapod/base-plugins
 MAINTAINER Sergey Arkhipov <sarkhipov@mirantis.com>
 
 

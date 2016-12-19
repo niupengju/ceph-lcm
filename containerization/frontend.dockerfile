@@ -12,13 +12,22 @@ ARG npm_registry=
 ENV NPM_CONFIG_REGISTRY=${npm_registry:-https://registry.npmjs.org/}
 
 
+RUN set -x \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+  && apt-get clean \
+  && apt-get autoremove -y \
+  && rm -r /var/lib/apt/lists/*
 
-COPY containerization/files/nginx.conf                       /etc/nginx/nginx.conf
-COPY containerization/files/package_managers/debian_apt.list /etc/apt/sources.list
-COPY ssl.crt                                                 /ssl/ssl.crt
-COPY ssl-dhparam.pem                                         /ssl/dhparam.pem
-COPY ssl.key                                                 /ssl/ssl.key
-COPY ui                                                      /ui
+
+COPY containerization/files/nginx.conf /etc/nginx/nginx.conf
+COPY debian_apt.list                   /etc/apt/sources.list
+COPY ssl.crt                           /ssl/ssl.crt
+COPY ssl-dhparam.pem                   /ssl/dhparam.pem
+COPY ssl.key                           /ssl/ssl.key
+COPY ui                                /ui
 
 
 RUN set -x \

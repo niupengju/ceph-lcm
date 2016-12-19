@@ -5,15 +5,15 @@ IMAGES_DIR := $(OUTPUT_DIR)/images
 DOCS_DIR   := $(OUTPUT_DIR)/docs
 DEB_DIR    := $(OUTPUT_DIR)/debs
 
-CONTAINER_API_NAME        := decapod-api
-CONTAINER_BASE_NAME       := decapod-base
-CONTAINER_CONTROLLER_NAME := decapod-controller
-CONTAINER_CRON_NAME       := decapod-cron
-CONTAINER_DB_NAME         := decapod-db
-CONTAINER_DB_DATA_NAME    := decapod-db-data
-CONTAINER_FRONTEND_NAME   := decapod-frontend
-CONTAINER_PLUGINS_NAME    := decapod-base-plugins
-CONTAINER_MIGRATIONS_NAME := decapod-migrations
+CONTAINER_API_NAME        := decapod/api
+CONTAINER_BASE_NAME       := decapod/base
+CONTAINER_CONTROLLER_NAME := decapod/controller
+CONTAINER_CRON_NAME       := decapod/cron
+CONTAINER_DB_NAME         := decapod/db
+CONTAINER_DB_DATA_NAME    := decapod/db-data
+CONTAINER_FRONTEND_NAME   := decapod/frontend
+CONTAINER_PLUGINS_NAME    := decapod/base-plugins
+CONTAINER_MIGRATIONS_NAME := decapod/migrations
 
 # -----------------------------------------------------------------------------
 
@@ -326,4 +326,6 @@ copy_example_keys:
 	cp "$(ROOT_DIR)/containerization/files/devconfigs/config.yaml" "$(ROOT_DIR)" && \
 	cp "$(ROOT_DIR)/containerization/files/devconfigs/mongodb.pem" "$(ROOT_DIR)" && \
 	cp "$(ROOT_DIR)/containerization/files/devconfigs/mongodb-ca.crt" "$(ROOT_DIR)" && \
+	cp "$(ROOT_DIR)/containerization/files/package_managers/debian_apt.list" "$(ROOT_DIR)" && \
+	cp "$(ROOT_DIR)/containerization/files/package_managers/ubuntu_apt.list" "$(ROOT_DIR)" && \
 	chmod 0600 "$(ROOT_DIR)/ansible_ssh_keyfile.pem"
