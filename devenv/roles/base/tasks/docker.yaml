@@ -52,10 +52,14 @@
 - name: Reload systemd units
   become: true
   command: systemctl daemon-reload
+  tags:
+    - skip_ansible_lint
 
 - name: Restart docker
   become: true
   command: systemctl restart docker
+  tags:
+    - skip_ansible_lint
 
 - name: Install docker-compose
   become: true
